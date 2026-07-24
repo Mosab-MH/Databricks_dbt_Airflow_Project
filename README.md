@@ -1,0 +1,89 @@
+# 🚀 Databricks, dbt & Apache Airflow Data Lakehouse Platform
+
+A modern, enterprise-grade Data Engineering & Analytics Platform demonstrating end-to-end orchestration, automated transformations, and dimensional modeling using **Apache Airflow**, **dbt Core (`dbt-databricks`)**, and **Databricks (Delta Lake Engine)**.
+
+---
+
+<p align="center">
+  <img src="dbt_airflow_project/docs/data_architecture.png" alt="Data Architecture Diagram" width="100%" />
+</p>
+
+---
+
+## 🏗️ Architecture & Medallion Design
+
+This project implements a multi-tier **Medallion Architecture** on Databricks Delta Lake, managed via dbt models and orchestrated seamlessly by Apache Airflow.
+
+<p align="center">
+  <img src="dbt_airflow_project/docs/data_flow_diagram.png" alt="Data Flow Diagram" width="100%" />
+</p>
+
+### 🥉 1. Bronze Layer (Raw Ingestion)
+* Ingests raw data streams/batches directly into Delta Lake format.
+* Schema enforcement with minimal processing to preserve historical raw payload integrity.
+
+### 🥈 2. Silver Layer (Cleaned & Conformed)
+* Applies data filtering, deduplication, type casting, and schema validation.
+* Consolidates intermediate source tables into clean, normalized models (`silver_t`) and One Big Table aggregates (`silver_b`).
+
+### 🥇 3. Gold Layer (Business Analytics)
+* Dimensional modeling (**Star Schema**) featuring optimized Fact and Dimension tables derived from Silver layers.
+* Business aggregation models optimized for high-performance BI reporting and analytics queries.
+
+---
+
+## 📖 Project Overview & Key Features
+
+This platform showcases end-to-end data engineering best practices:
+
+* **Orchestration**: Automated Apache Airflow DAG workflows with explicit dependencies, retries, and job tracking.
+* **Transformations**: Modular dbt modeling using `dbt-databricks` with Delta Lake optimizations (such as `MERGE` and incremental models).
+* **Data Quality Assertions**: Automated testing via dbt tests to prevent bad data propagation across layers.
+* **Modern Stack Integration**: Unity Catalog compatible structure, containerized workflow setups, and decoupled compute/storage design.
+
+---
+
+## 🛠️ Tech Stack & Prerequisites
+
+| Technology | Role / Function |
+| :--- | :--- |
+| **Databricks** | Compute Engine & Delta Lake Warehouse |
+| **dbt Core (`dbt-databricks`)** | SQL Transformations & Modeling |
+| **Apache Airflow** | Workflow Orchestration & DAG Management |
+| **Docker** | Containerized Local Execution Environment |
+| **Python 3.10+ / SQL** | Pipeline Logic & Scripting |
+
+---
+
+## 📂 Repository Structure
+
+```text
+Databricks_dbt_Airflow_Project/
+│
+├── dbt_project/                          # dbt models, macros, and configuration
+│   ├── models/                           # Medallion layer transformation models
+│   │   ├── bronze/                       # Raw source configurations and staging views
+│   │   ├── silver/                       # Cleansed, normalized intermediate models
+│   │   └── gold/                         # Fact and Dimension dimensional models
+│   ├── tests/                            # Data quality assertions & schema tests
+│   ├── dbt_project.yml                   # dbt configuration settings
+│   └── profiles.yml                      # Connection profiles for Databricks
+│
+├── dags/                                 # Apache Airflow DAG workflows
+│   ├── databricks_dbt_pipeline.py        # Main pipeline execution DAG
+│   └── utils/                            # Custom operators and orchestration helper logic
+│
+├── docs/                                 # Visual architecture & workflow diagrams
+│   ├── data_architecture.png             # Architecture diagram
+│   ├── data_flow_diagram.png             # Flow execution diagram
+│   └── data_catalog.md                   # Data dictionary & column definitions
+│
+├── scripts/                              # Utility scripts & Databricks init commands
+├── .gitignore                            # Git ignore rules
+├── Dockerfile                            # Docker image setup for execution
+├── README.md                             # Project documentation
+└── requirements.txt                      # Python dependencies (dbt-databricks, airflow, etc.)
+---
+
+
+
