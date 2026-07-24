@@ -83,25 +83,31 @@ Databricks_dbt_Airflow_Project/
 │
 ├── dbt_project/                          # dbt models, macros, and configuration
 │   ├── models/                           # Medallion layer transformation models
-│   │   ├── bronze/                       # Raw source configurations and staging views
-│   │   ├── silver/                       # Cleansed, normalized intermediate models
-│   │   └── gold/                         # Fact and Dimension dimensional models
+│   │   ├── bronze/                       # Raw source configurations & staging views
+│   │   ├── silver_t/                     # Technical cleansing & normalization models
+│   │   ├── silver_b/                     # One Big Table (OBT) business aggregation model
+│   │   └── gold/                         # Star Schema Dimensional Modeling
+│   │       ├── ephemeral/                # Temporary CTE models for intermediate metrics/logic
+│   │       ├── dim/                      # Dimension tables (SCD Type 2 / master entities)
+│   │       └── fact/                     # Fact tables (transactional & aggregated metrics)
+│   │
+│   ├── macros/                           # Reusable Jinja/SQL transformation functions
+│   ├── snapshots/                        # dbt Snapshots for CDC & SCD Type 2 tracking
 │   ├── tests/                            # Data quality assertions & schema tests
-│   ├── dbt_project.yml                   # dbt configuration settings
-│   └── profiles.yml                      # Connection profiles for Databricks
+│   ├── dbt_project.yml                   # Main dbt project configuration settings
+│   └── profiles.yml                      # Connection profiles for Databricks Delta Lake
 │
 ├── dags/                                 # Apache Airflow DAG workflows
-│   ├── databricks_dbt_pipeline.py        # Main pipeline execution DAG (`orchestrate`)
+│   ├── orchestrate.py                    # Main pipeline execution DAG (`orchestrate`)
 │   └── utils/                            # Custom operators and orchestration helper logic
 │
 ├── docs/                                 # Visual architecture & workflow diagrams
-│   ├── data_architecture.png             # Architecture diagram
-│   ├── data_flow_diagram.png             # Flow execution diagram
-│   ├── Dag.png                           # Airflow DAG run execution screenshot
-│   └── data_catalog.md                   # Data dictionary & column definitions
+│   ├── data_architecture.png             # Overall Medallion architecture diagram
+│   ├── data_flow_diagram.png             # End-to-end data flow execution diagram
+│   └── Dag.png                           # Airflow orchestration DAG execution screenshot
 │
 ├── scripts/                              # Utility scripts & Databricks init commands
 ├── .gitignore                            # Git ignore rules
-├── Dockerfile                            # Docker image setup for execution
-├── README.md                             # Project documentation
-└── requirements.txt                      # Python dependencies (dbt-databricks, airflow, etc.)
+├── Dockerfile                            # Containerized execution setup for Airflow/dbt
+├── README.md                             # Comprehensive project documentation
+└── requirements.txt                      # Python dependencies (dbt-databricks, apache-airflow, etc.)
