@@ -5,7 +5,7 @@ A modern, enterprise-grade Data Engineering & Analytics Platform demonstrating e
 ---
 
 <p align="center">
-  <img src="dbt_airflow_project/docs/data_architecture.png" alt="Data Architecture Diagram" width="100%" />
+  <img src="dbt_airflow_project/docs/data_architecture.png" alt="Data Flow Diagram" width="100%" />
 </p>
 
 ---
@@ -15,7 +15,7 @@ A modern, enterprise-grade Data Engineering & Analytics Platform demonstrating e
 This project implements a multi-tier **Medallion Architecture** on Databricks Delta Lake, managed via dbt models and orchestrated seamlessly by Apache Airflow.
 
 <p align="center">
-  <img src="dbt_airflow_project/docs/data_flow_diagram.png" alt="Data Flow Diagram" width="100%" />
+  <img src="dbt_airflow_project/docs/data_flow_diagram.png" alt="Data Architecture Diagram" width="100%" />
 </p>
 
 ### 🥉 1. Bronze Layer (Raw Ingestion)
@@ -29,6 +29,27 @@ This project implements a multi-tier **Medallion Architecture** on Databricks De
 ### 🥇 3. Gold Layer (Business Analytics)
 * Dimensional modeling (**Star Schema**) featuring optimized Fact and Dimension tables derived from Silver layers.
 * Business aggregation models optimized for high-performance BI reporting and analytics queries.
+
+---
+
+## ⚡ Airflow DAG & Workflow Orchestration
+
+The platform's end-to-end pipeline is orchestrated using Apache Airflow to guarantee data quality checks, dependency management, and automated execution across all transformation stages.
+
+* **DAG ID:** `orchestrate`
+* **Orchestration Workflow:** Ingestion CDC ➔ Environment Cleanup ➔ Freshness Checks ➔ Technical & Business Transformations ➔ Data Quality Tests ➔ Gold Dimensional Modeling.
+
+<p align="center">
+  <img src="dbt_airflow_project/docs/Dag.png" alt="Airflow Orchestration DAG Pipeline" width="100%" />
+</p>
+
+### Pipeline Execution Stages:
+1. **`ingest_cdc`**: Ingests changed data capture payloads into the landing area.
+2. **`clean_target_directory`**: Prepares working directories for intermediate transformations.
+3. **`source_freshness`**: Verifies data pipeline SLA and upstream source freshness.
+4. **`silver_technical` & `silver_technical_tests`**: Cleanses data and executes staging assertions.
+5. **`silver_business` & `silver_business_tests`**: Transforms technical models into standardized business representations.
+6. **`gold_ephemeral` / `gold_dimensions` / `gold_facts`**: Builds ultimate dimensional models (Star Schema) ready for BI analytics.
 
 ---
 
@@ -70,12 +91,13 @@ Databricks_dbt_Airflow_Project/
 │   └── profiles.yml                      # Connection profiles for Databricks
 │
 ├── dags/                                 # Apache Airflow DAG workflows
-│   ├── databricks_dbt_pipeline.py        # Main pipeline execution DAG
+│   ├── databricks_dbt_pipeline.py        # Main pipeline execution DAG (`orchestrate`)
 │   └── utils/                            # Custom operators and orchestration helper logic
 │
 ├── docs/                                 # Visual architecture & workflow diagrams
 │   ├── data_architecture.png             # Architecture diagram
 │   ├── data_flow_diagram.png             # Flow execution diagram
+│   ├── Dag.png                           # Airflow DAG run execution screenshot
 │   └── data_catalog.md                   # Data dictionary & column definitions
 │
 ├── scripts/                              # Utility scripts & Databricks init commands
@@ -83,7 +105,3 @@ Databricks_dbt_Airflow_Project/
 ├── Dockerfile                            # Docker image setup for execution
 ├── README.md                             # Project documentation
 └── requirements.txt                      # Python dependencies (dbt-databricks, airflow, etc.)
----
-
-
-
